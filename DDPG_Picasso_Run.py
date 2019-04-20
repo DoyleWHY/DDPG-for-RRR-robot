@@ -1,12 +1,15 @@
 from DDPG_Picasso_Env import Picasso_Sim
 from DDPG_Picasso_Brain import DDPG
+import tensorflow as tf
 import numpy as np
 import time
 import math
 import tkinter
 import tkinter.messagebox
+import random
 
 OUTPUT_GRAPH = False
+SAVE_MODEL = False
 RENDER = True
 
 MAX_EPISODES = 200
@@ -45,11 +48,14 @@ def run_picasso_demo():
 		    print('Cycles:',i,'  Steps:',steps)
 		    if done or steps >= MAX_EP_STEPS:
 			    if done:
-				    tkinter.messagebox.showinfo('Thank God','Model works!')
-				    #time.sleep(2)
-				    env.target_position[0,0] = input("Input new x：");
-				    env.target_position[0,1] = input("Input new y：");
-				    env.target_position[0,2] = input("Input new z：");	
+				    #tkinter.messagebox.showinfo('Thank God','Model works!')
+				    time.sleep(0.5)
+				    #env.target_position[0,0] = input("Input new x：");
+				    #env.target_position[0,1] = input("Input new y：");
+				    #env.target_position[0,2] = input("Input new z：");	
+				    #env.target_position[0,0] = random.uniform(-0.85, 0.85)
+				    #env.target_position[0,1] = random.uniform(0.15, 0.85)
+				    #env.target_position[0,2] = random.uniform(0.15, 0.85)
 			    print('Episode:', i, ' Reward: %i' % int(ep_reward), 'Explore: %.2f' % var, ' Steps:',steps)
 			    break
 	print('Running time: ', time.time() - t1)
@@ -61,10 +67,7 @@ if __name__ == "__main__":
     a_dim = env.action_space.shape[0]
     a_bound = env.action_space.high
     
-    ddpg = DDPG(a_dim, s_dim, a_bound)
-       
-
-    if OUTPUT_GRAPH:
-        tf.summary.FileWriter("logs_DDPG/", sess.graph)
+    ddpg = DDPG(a_dim, s_dim, a_bound, save_model=SAVE_MODEL, save_graph=OUTPUT_GRAPH)
 
     run_picasso_demo()
+    #ddpg.save_sweatheart()
